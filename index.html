@@ -16,6 +16,14 @@
                 <p v-html = "lesson.location"></p>
                 <p> Price : {{lesson.price}} AED </p>
                 <p> Spaces : {{lesson.availableSpaces }} </p>
+                <!-- Add to cart button when items can be added -->
+                <button v-on:click = "addToCart" v-if="canAddToCart"> 
+                    Add to Cart 
+                </button>
+                <!-- Add to cart button will be disabled when the items cannot be added-->
+                <button disabled = "disabled" v-else> 
+                    Add to Cart 
+                </button>
             </main>    
         </div>
 
@@ -30,8 +38,27 @@
                         price: 150,
                         availableSpaces : 5,
                         image: "Images/biology.png"
+                    },
+                    cart: []  //the array that holds the items added to cart.
+                },
+                methods:{
+                    addToCart: function()
+                    {
+                        this.cart.push(this.lesson.id);
+                    }
+                    
+                },
+                computed:{
+                    cartItemCount: function()
+                    {
+                        return this.cart.length;
+                    },
+                    canAddToCart: function()
+                    {
+                        return this.lesson.availableSpaces > this.cartItemCount;
                     }
                 }
+            
             });
         </script>
     </body>
