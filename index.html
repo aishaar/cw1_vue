@@ -7,8 +7,11 @@
         <div id ="app">
             <header>
                 <!--<h1 v-text = "sitename"> </h1> -->
-                <button v-on:click = "showCheckoutPage">
+                <button v-on:click = "showCheckoutPage" v-if="itemsInCart">
                     {{ cartItemCount }} Checkout
+                </button>
+                <button disabled="disabled" v-else>
+                    Checkout
                 </button>
             </header>
             <main>
@@ -32,6 +35,31 @@
                 <div v-else>
                     <h2> Shopping Cart </h2>
                     <h2> Checkout </h2>
+                    <p>
+                        <strong> First name: </strong> 
+                        <input v-model="order.firstName" required/>
+                    </p>
+                    <p>
+                        <strong> Last name: </strong> 
+                        <input v-model="order.lastName" required/>
+                    </p>
+                    <p>
+                        <strong> Phone: </strong> 
+                        <input v-model.number="order.phoneNum" type = "number" required/>
+                    </p>
+                    <h4> Order Information</h4>
+                    
+                    <p> First Name : {{ order.firstName}}</p>
+                    <p> Last Name : {{ order.lastName }} </p>
+                    <p> Phone : {{ order.phoneNum }}</p>
+                    
+                    <!-- -->
+                    <button v-on:click="showThankYou" v-if="canConfirmOrder"> 
+                        Confirm Order 
+                    </button>
+                    <button disabled = "disabled" v-else>
+                        Confirm Order
+                    </button>
                 </div>
             </main>    
         </div>
@@ -49,7 +77,14 @@
                         image: "Images/biology.png"
                     },
                     cart: [],  //the array that holds the items added to cart.
-                    showProductPage : true
+                    showProductPage : true,
+                    order:
+                    {
+                        firstName: "",
+                        lastName: "",
+                        phoneNum: ""
+                    }
+                   
                 },
                 methods:{
                     addToCart: function()
@@ -59,8 +94,11 @@
                     showCheckoutPage()
                     {
                         this.showProductPage = this.showProductPage ? false : true;
-                    }
-                    
+                    },
+                    showThankYou()
+                    {
+                        console.log("Thank you");
+                    },
                 },
                 computed:{
                     cartItemCount: function()
@@ -70,9 +108,18 @@
                     canAddToCart: function()
                     {
                         return this.lesson.availableSpaces > this.cartItemCount;
-                    }
-                }
-            
+                    },
+                    itemsInCart()  //checks if the items are present or not
+                    {
+                        return this.cartItemCount > 0;
+                    },
+                    canConfirmOrder() //validates the information before displaying the confirm order button 
+                    {  
+                        let alphabets = /^[A-Za-z]+$/;
+                        let num_range = /^[0-9]+$/;
+                        return alphabets.test(this.order.firstName) && alphabets.test(this.order.lastName) && num_range.test(this.order.phoneNum);
+                    } 
+                },
             });
         </script>
     </body>
