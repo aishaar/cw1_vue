@@ -8,27 +8,27 @@
         <div id ="app">
             <header>
                 <!--<h1 v-text = "sitename"> </h1> -->
-                <button v-on:click = "showCheckoutPage" v-if="itemsInCart">
-                    {{ cartItemCount }} Checkout
-                </button>
-                <button disabled="disabled" v-else>
-                    Checkout
-                </button>
-                <p> 
-                    <input type = "radio" id = "price" value = "Price" v-model = "attribute"> 
-                    <label for = "price"> Price </label>
-                    <input type = "radio" id="subject" value = "Subject" v-model="attribute">
-                    <label for = "business"> Subject </label>
-                    <input type = "radio" id = "location" value = "Location" v-model = "attribute">
-                    <label for = "location"> Location </label>
-                    <input type = "radio" id = "spaces" value = "Spaces" v-model = "attribute">
-                    <label for = "spaces"> Available Spaces </label>
-                </p>
-                <button v-on:click="sortAscending"> Ascending </button>
-                <button v-on:click="sortDescending"> Descending </button> 
             </header>
             <main>
                 <div v-if = "showProductPage">
+                        <button v-on:click = "showCheckoutPage" v-if="itemsInCart">
+                                {{ cartItemCount }} Checkout
+                            </button>
+                            <button disabled="disabled" v-else>
+                                Checkout
+                            </button>
+                            <p> 
+                                <input type = "radio" id = "price" value = "Price" v-model = "attribute"> 
+                                <label for = "price"> Price </label>
+                                <input type = "radio" id="subject" value = "Subject" v-model="attribute">
+                                <label for = "business"> Subject </label>
+                                <input type = "radio" id = "location" value = "Location" v-model = "attribute">
+                                <label for = "location"> Location </label>
+                                <input type = "radio" id = "spaces" value = "Spaces" v-model = "attribute">
+                                <label for = "spaces"> Available Spaces </label>
+                            </p>
+                            <button v-on:click="sortAscending"> Ascending </button>
+                            <button v-on:click="sortDescending"> Descending </button> 
                     <div v-for="lesson in lesson">
                     <figure>
                         <img v-bind:src = "lesson.image" style = "height: 250px; width: 250px">
@@ -49,6 +49,22 @@
                 </div><!-- end of v-if-->
                 <div v-else>
                     <h2> Shopping Cart </h2>
+                    <button v-on:click="backToLessonPage"> Back to Lesson </button> 
+                    <div v-show="emptyCart">  
+                        Empty Shopping Cart 
+                    </div>
+                    
+                    <!-- i is index of the item in the array / displays the items in the cart-->
+                    <div v-for = "(lesson,i) in cart">
+                        <figure>
+                            <img v-bind:src = "lesson.image" style = "height: 250px; width: 250px">
+                        </figure>
+                        <h2 v-text = "lesson.subject"></h2>
+                        <p v-html = "lesson.location"></p>
+                        <p> Price : {{lesson.price}} AED </p>
+                        <button v-on:click="cart.splice(i,1)"> Remove Item </button>
+                    </div> <!-- end of v-for-->
+
                     <h2> Checkout </h2>
                     <p>
                         <strong> First name: </strong> 
@@ -62,8 +78,8 @@
                         <strong> Phone: </strong> 
                         <input v-model.number="order.phoneNum" type = "number" required/>
                     </p>
+
                     <h4> Order Information</h4>
-                    
                     <p> First Name : {{ order.firstName}}</p>
                     <p> Last Name : {{ order.lastName }} </p>
                     <p> Phone : {{ order.phoneNum }} </p>
@@ -90,12 +106,13 @@
                         firstName: "",
                         lastName: "",
                         phoneNum: ""
-                    }
+                    },
+                    emptyCart: false
                 },
                 methods:{
                     addToCart(lesson)
                     {
-                        this.cart.push(lesson.id);
+                        this.cart.push(lesson);
                         lesson.availableSpaces--;
                     },
                     showCheckoutPage()
@@ -233,6 +250,10 @@
 						{
 							alert("Please choose an attribute");
 						}
+                    },
+                    backToLessonPage()
+                    {
+                        this.showProductPage = true;
                     }
 
                 },
@@ -247,9 +268,17 @@
                     },
                     canConfirmOrder()  
                     {  
+                        if(this.cartItemCount != 0){
                         let alphabets = /^[A-Za-z]+$/;
                         let num_range = /^[0-9]+$/;
+                        this.emptyCart = false;
                         return alphabets.test(this.order.firstName) && alphabets.test(this.order.lastName) && num_range.test(this.order.phoneNum);
+                        }
+                        else
+                        {
+                            //if there are no items in the cart, the emptyCart div is shown
+                           this.emptyCart = true;
+                        }
                     }
                 },
             });
