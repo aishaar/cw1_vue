@@ -14,6 +14,18 @@
                 <button disabled="disabled" v-else>
                     Checkout
                 </button>
+                <p> 
+                    <input type = "radio" id = "price" value = "Price" v-model = "attribute"> 
+                    <label for = "price"> Price </label>
+                    <input type = "radio" id="subject" value = "Subject" v-model="attribute">
+                    <label for = "business"> Subject </label>
+                    <input type = "radio" id = "location" value = "Location" v-model = "attribute">
+                    <label for = "location"> Location </label>
+                    <input type = "radio" id = "spaces" value = "Spaces" v-model = "attribute">
+                    <label for = "spaces"> Available Spaces </label>
+                </p>
+                <button v-on:click="sortAscending"> Ascending </button>
+                <button v-on:click="sortDescending"> Descending </button> 
             </header>
             <main>
                 <div v-if = "showProductPage">
@@ -24,7 +36,7 @@
                     <h2 v-text = "lesson.subject"></h2>
                     <p v-html = "lesson.location"></p>
                     <p> Price : {{lesson.price}} AED </p>
-                    <p> Spaces : {{lesson.availableSpaces - cartCount(lesson.id)}} </p>
+                    <p> Spaces : {{lesson.availableSpaces}} </p>
                     <!-- Add to cart button when items can be added -->
                     <button v-on:click = "addToCart(lesson)" v-if="canAddToCart(lesson)"> 
                         Add to Cart 
@@ -72,6 +84,7 @@
                     lesson: lessons,
                     cart: [],  //the array that holds the items added to cart.
                     showProductPage : true,
+                    attribute: '',
                     order:
                     {
                         firstName: "",
@@ -83,6 +96,7 @@
                     addToCart(lesson)
                     {
                         this.cart.push(lesson.id);
+                        lesson.availableSpaces--;
                     },
                     showCheckoutPage()
                     {
@@ -92,9 +106,10 @@
                     {
                         alert("Thank you");
                     },
+                    //
                     canAddToCart(lesson)
                     {
-                        return lesson.availableSpaces > this.cartCount(lesson.id);
+                        return lesson.availableSpaces > 0;
                     },
                     cartCount(id)
                     {
@@ -107,7 +122,119 @@
                             }   
                         }
                         return count;
+                    },
+                    sortAscending()
+					{
+						if(this.attribute === "Price")
+						{
+							function ascendPrice(a,b)
+							{
+							if(a.price > b.price)
+								return 1;
+							if(a.price < b.price)
+							    return -1;
+							return 0
+							}
+							this.lesson.sort(ascendPrice);
+						}
+						else if(this.attribute === "Subject")
+						{
+							function ascendSubject(a,b)
+							{
+							if(a.subject > b.subject)
+								return 1;
+							if(a.subject < b.subject)
+							    return -1;
+							return 0
+							}
+							this.lesson.sort(ascendSubject);
+						}
+						else if(this.attribute === "Location")
+						{
+							function ascendLocation(a,b)
+							{
+							if(a.location > b.location)
+								return 1;
+							if(a.location < b.location)
+							    return -1;
+							return 0
+							}
+							this.lesson.sort(ascendLocation);
+						}
+						else if(this.attribute === "Spaces")
+						{
+							//let spaces = this.lesson.availableSpaces 
+							function ascendSpaces(a,b)
+							{
+							if(a.availableSpaces > b.availableSpaces)
+								return 1;
+							if(a.availableSpaces < b.availableSpaces)
+							    return -1;
+							return 0
+							}
+							this.lesson.sort(ascendSpaces);
+						}
+						else
+						{
+							alert("Please choose an attribute");
+                        }
+                    },
+                    sortDescending()
+					{
+						if(this.attribute === "Price")
+						{
+							function descendPrice(a,b)
+							{
+							if(a.price < b.price)
+								return 1;
+							if(a.price > b.price)
+							    return -1;
+							return 0
+							}
+							this.lesson.sort(descendPrice);
+						}
+						else if(this.attribute === "Subject")
+						{
+							function descendSubject(a,b)
+							{
+							if(a.subject < b.subject)
+								return 1;
+							if(a.subject > b.subject)
+							    return -1;
+							return 0
+							}
+							this.lesson.sort(descendSubject);
+						}
+						else if(this.attribute === "Location")
+						{
+							function descendLocation(a,b)
+							{
+							if(a.location < b.location)
+								return 1;
+							if(a.location > b.location)
+							    return -1;
+							return 0
+							}
+							this.lesson.sort(descendLocation);
+						}
+						else if(this.attribute === "Spaces")
+						{ 
+							function descendSpaces(a,b)
+							{
+							if(a.availableSpaces < b.availableSpaces)
+								return 1;
+							if(a.availableSpaces > b.availableSpaces)
+							    return -1;
+							return 0
+							}
+							this.lesson.sort(descendSpaces);
+						}
+						else
+						{
+							alert("Please choose an attribute");
+						}
                     }
+
                 },
                 computed:{
                     cartItemCount: function()
@@ -123,7 +250,7 @@
                         let alphabets = /^[A-Za-z]+$/;
                         let num_range = /^[0-9]+$/;
                         return alphabets.test(this.order.firstName) && alphabets.test(this.order.lastName) && num_range.test(this.order.phoneNum);
-                    } 
+                    }
                 },
             });
         </script>
