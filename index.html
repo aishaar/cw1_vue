@@ -51,7 +51,7 @@
                     <h2> Shopping Cart </h2>
                     <button v-on:click="backToLessonPage"> Back to Lesson </button> 
                     <div v-show="emptyCart">  
-                        Empty Shopping Cart 
+                        No items in shopping cart
                     </div>
                     
                     <!-- i is index of the item in the array / displays the items in the cart-->
@@ -62,7 +62,7 @@
                         <h2 v-text = "lesson.subject"></h2>
                         <p v-html = "lesson.location"></p>
                         <p> Price : {{lesson.price}} AED </p>
-                        <button v-on:click="cart.splice(i,1)"> Remove Item </button>
+                        <button v-on:click="cart.splice(i,1)"> Remove </button>
                     </div> <!-- end of v-for-->
 
                     <h2> Checkout </h2>
@@ -101,18 +101,19 @@
                     cart: [],  //the array that holds the items added to cart.
                     showProductPage : true,
                     attribute: '',
+                    emptyCart: false,
                     order:
                     {
                         firstName: "",
                         lastName: "",
                         phoneNum: ""
-                    },
-                    emptyCart: false
+                    }
+                    
                 },
                 methods:{
                     addToCart(lesson)
                     {
-                        this.cart.push(lesson);
+                        this.cart.push(lesson)
                         lesson.availableSpaces--;
                     },
                     showCheckoutPage()
@@ -123,7 +124,6 @@
                     {
                         alert("Thank you");
                     },
-                    //
                     canAddToCart(lesson)
                     {
                         return lesson.availableSpaces > 0;
@@ -268,7 +268,9 @@
                     },
                     canConfirmOrder()  
                     {  
-                        if(this.cartItemCount != 0){
+                        //accepts the details only if there are items in the cart 
+                        if(this.cartItemCount != 0)
+                        {
                         let alphabets = /^[A-Za-z]+$/;
                         let num_range = /^[0-9]+$/;
                         this.emptyCart = false;
@@ -277,7 +279,7 @@
                         else
                         {
                             //if there are no items in the cart, the emptyCart div is shown
-                           this.emptyCart = true;
+                            this.emptyCart = true;
                         }
                     }
                 },
