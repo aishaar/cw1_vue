@@ -3,111 +3,122 @@
         <title> After School Lessons </title>
         <script src = "https://unpkg.com/vue"></script>
         <script src = "lessons.js"></script>
+        <link href = "style.css" rel = "stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     </head>
     <body>
         <div id ="app">
             <header>
-                <!--<h1 v-text = "sitename"> </h1> -->
+                <h1 v-text = "sitename"> </h1>
             </header>
             <main>
-                <div v-if = "showProductPage">
-                        <button v-on:click = "showCheckoutPage" v-if="itemsInCart">
-                                {{ cartItemCount }} Checkout
-                            </button>
-                            <button disabled="disabled" v-else>
-                                Checkout
-                            </button>
-                            <p> 
-                                <input type = "radio" id = "price" value = "Price" v-model = "attribute"> 
-                                <label for = "price"> Price </label>
-                                <input type = "radio" id="subject" value = "Subject" v-model="attribute">
-                                <label for = "business"> Subject </label>
-                                <input type = "radio" id = "location" value = "Location" v-model = "attribute">
-                                <label for = "location"> Location </label>
-                                <input type = "radio" id = "spaces" value = "Spaces" v-model = "attribute">
-                                <label for = "spaces"> Available Spaces </label>
-                            </p>
-                            <button v-on:click="sortAscending"> Ascending </button>
-                            <button v-on:click="sortDescending"> Descending </button> 
-                    <div v-for="lesson in lesson">
-                    <figure>
-                        <img v-bind:src = "lesson.image" style = "height: 250px; width: 250px">
-                    </figure>
-                    <h2 v-text = "lesson.subject"></h2>
-                    <p v-html = "lesson.location"></p>
-                    <p> Price : {{lesson.price}} AED </p>
-                    <p> Spaces : {{lesson.availableSpaces}} </p>
-                    <!-- Add to cart button when items can be added -->
-                    <button v-on:click = "addToCart(lesson)" v-if="canAddToCart(lesson)"> 
-                        Add to Cart 
+                <div v-if = "showProductPage" class = "main-lesson-box">
+                    <button v-on:click = "showCheckoutPage" v-if="itemsInCart" class = "check-btn">
+                        <span class = "fas fa-cart-plus"></span>
+                        {{ cartItemCount }} Checkout
                     </button>
-                    <!-- Add to cart button will be disabled when the items cannot be added-->
-                    <button disabled = "disabled" v-else> 
-                        Add to Cart 
+                    <button disabled="disabled" v-else class = "check-btn">
+                        <span class = "fas fa-cart-plus"></span>
+                        Checkout
                     </button>
-                </div> <!-- end of v-for -->
+                    <div id = "sort-box">
+                        <p> 
+                            <p id = "sort-prompt"> Sort by </p>
+                            <input type = "radio" id = "price" value = "Price" v-model = "attribute" class = "sort-element"> 
+                            <label for = "price"> Price </label><br><br>
+                            <input type = "radio" id="subject" value = "Subject" v-model="attribute" class = "sort-element">
+                            <label for = "business"> Subject </label><br><br>
+                            <input type = "radio" id = "location" value = "Location" v-model = "attribute" class = "sort-element">
+                            <label for = "location"> Location </label><br><br>
+                            <input type = "radio" id = "spaces" value = "Spaces" v-model = "attribute" class = "sort-element">
+                            <label for = "spaces"> Available Spaces </label><br><br>
+                        </p>
+                        <button v-on:click="sortAscending" class = "sort-btn "> Ascending </button>
+                        <button v-on:click="sortDescending" class = "sort-btn "> Descending </button>
+                    </div> 
+
+                    <div class = box>
+                        <div v-for="lesson in lesson" id="lesson-box">
+                            <figure>
+                                <img v-bind:src = "lesson.image" style = "height: 250px; width: 250px">
+                            </figure>
+                            <h2 v-text = "lesson.subject"></h2>
+                            <p class = "location-lesson" v-html = "lesson.location"></p>
+                            <p class = "lesson-info" > Price : {{lesson.price}} AED </p>
+                            <p class = "lesson-info"> Spaces : {{lesson.availableSpaces}} </p>
+                            <!-- Add to cart button when items can be added -->
+                            <button v-on:click = "addToCart(lesson)" v-if="canAddToCart(lesson)" class = "add-btn">
+                                <span class="fas fa-plus-circle"></span>   
+                                Add to Cart 
+                            </button>
+                            <!-- Add to cart button will be disabled when the items cannot be added-->
+                            <button disabled = "disabled" v-else class = "add-btn"> 
+                                Add to Cart 
+                            </button>
+                        </div> <!-- end of v-for -->
+                    </div> <!-- end of the box div-->
                 </div><!-- end of v-if-->
-                <div v-else>
-                    <h2> Shopping Cart </h2>
-                    <button v-on:click="backToLessonPage"> Back to Lesson </button> 
-                    <div v-show="emptyCart">  
-                        No items in shopping cart
-                    </div>
+
+                <div v-else class="shop-main-div">
+                    <button v-on:click="backToLessonPage" class = "back-btn"> <span class="fas fa-arrow-left"></span> Back to Lesson </button> 
+                    <h2 class = "check-head"> Shopping Cart </h2> 
+                    <div v-if="emptyCart" id="empty-cart">  
+                        <p id = "empty-msg"> No items in cart </p>
+                    </div> <!-- enf of emptyCart-->
                     
                     <!-- i is index of the item in the array / displays the items in the cart-->
-                    <div v-for = "(lesson,i) in cart">
+                    <div v-for = "(lesson,i) in cart" id = "lesson-cart-box">
                         <figure>
                             <img v-bind:src = "lesson.image" style = "height: 250px; width: 250px">
                         </figure>
                         <h2 v-text = "lesson.subject"></h2>
-                        <p v-html = "lesson.location"></p>
-                        <p> Price : {{lesson.price}} AED </p>
-                        <button v-on:click="cart.splice(i,1)"> Remove </button>
+                        <p v-html = "lesson.location"  class = "location-lesson"></p>
+                        <p class = "lesson-info"> Price : {{lesson.price}} AED </p>
+                        <button v-on:click="cart.splice(i,1)" class = "remove-btn"> <span class="fas fa-trash-alt"></span> Remove Item </button>
                     </div> <!-- end of v-for-->
 
-                    <h2> Checkout </h2>
-                    <p>
-                        <strong> First name: </strong> 
-                        <input v-model="order.firstName" required/>
-                    </p>
-                    <p>
-                        <strong> Last name: </strong> 
-                        <input v-model="order.lastName" required/>
-                    </p>
-                    <p>
-                        <strong> Phone: </strong> 
-                        <input v-model.number="order.phoneNum" type = "number" required/>
-                    </p>
-
-                    <h4> Order Information</h4>
-                    <p> First Name : {{ order.firstName}}</p>
-                    <p> Last Name : {{ order.lastName }} </p>
-                    <p> Phone : {{ order.phoneNum }} </p>
-                    <button v-on:click="showThankYou" v-if="canConfirmOrder"> 
-                        Confirm Order 
-                    </button>
-                    <button disabled = "disabled" v-else>
-                        Confirm Order
-                    </button>
-                </div>
+                    <div id = "checkout-div"> 
+                        <h2 class = "check-head"> Checkout </h2>
+                        <p class = "order-info">
+                            <strong> First name: </strong> 
+                            <input v-model="order.firstName" required class = "order-input"/>
+                        </p>
+                        <p class = "order-info">
+                            <strong> Last name: </strong> 
+                            <input v-model="order.lastName" required class = "order-input"/>
+                        </p>
+                        <p class = "order-info">
+                            <strong> Phone: </strong> 
+                            <input v-model.number="order.phoneNum" type = "number" required class = "order-input"/>
+                        </p>
+                        <button v-on:click="showThankYou" v-if="canConfirmOrder" class = "confirm-btn">
+                            <span class="fas fa-check"></span> 
+                            Confirm Order 
+                        </button>
+                        <button disabled = "disabled" v-else class = "confirm-btn">
+                            Confirm Order
+                        </button>
+                    </div> <!-- end of checkout-div-->
+                </div> <!-- end of v-else-->
             </main>    
-        </div>
+        </div> <!-- end of div app-->
 
         <script type = "text/javascript">
             var school = new Vue ({
                 el: "#app",
                 data: {
+                    sitename: "Learning Beyond",
                     lesson: lessons,
                     cart: [],  //the array that holds the items added to cart.
                     showProductPage : true,
-                    attribute: '',
-                    emptyCart: false,
+                    attribute: '',  //the attribute that is chosen to sort the products
                     order:
                     {
                         firstName: "",
                         lastName: "",
                         phoneNum: ""
-                    }
+                    },
+                    emptyCart: false //checks if the cart is empty 
                     
                 },
                 methods:{
@@ -122,7 +133,7 @@
                     },
                     showThankYou()
                     {
-                        alert("Thank you");
+                        alert("Thank you. Your order has been confirmed");
                     },
                     canAddToCart(lesson)
                     {
@@ -180,7 +191,7 @@
 						}
 						else if(this.attribute === "Spaces")
 						{
-							//let spaces = this.lesson.availableSpaces 
+							
 							function ascendSpaces(a,b)
 							{
 							if(a.availableSpaces > b.availableSpaces)
